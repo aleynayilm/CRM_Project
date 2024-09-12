@@ -1,0 +1,168 @@
+@model IEnumerable<CRMV2.ViewModels.LogVM>
+
+@{
+    ViewData["Title"] = "Log Page";
+}
+
+<h1>User Actions</h1>
+<form asp-action="Filter" method="get" class="mb-3">
+        <div class="form-group">
+            <label for="UserSelect">User Name</label>
+            @Html.DropDownList("selectedUser", ViewBag.Users as IEnumerable<SelectListItem>, "Select User", new { @class = "form-control", id = "UserSelect" })
+    </div>
+    <div class="form-group">
+        <label for="BeginDate">Begin Date</label>
+        <input type="date" name="beginDate" id="BeginDate" class="form-control" />
+    </div>
+    <div class="form-group">
+        <label for="EndDate">End Date</label>
+        <input type="date" name="endDate" id="EndDate" class="form-control" />
+    </div>
+    <button type="submit" class="btn btn-outline-primary">Filter</button>
+</form>
+ <table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.Date)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Level)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Message)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.UserFirstName)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Date)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Level)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Message)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.UserFirstName)
+                </td>
+            </tr>
+        }
+    </tbody>
+</table> 
+    <script>
+        $(document).ready(function () {
+        // $('#UserSelect').select2({
+        //     ajax: {
+        //         url: '/Users/GetUsers',
+        //         dataType: 'json',
+        //         delay: 250,  // İstekleri geciktirir, sunucu yükünü azaltmak için.
+        //         data: function (params) {
+        //             return {
+        //                 q: params.term // arama sorgusunu backend'e gönderir
+        //             };
+        //         },
+        //         processResults: function (data) {
+        //             return {
+        //                 results: $.map(data, function (item) {
+        //                     return {
+        //                         id: item.id,
+        //                         text: item.text
+        //                     };
+        //                 })
+        //             };
+        //         },
+        //         cache: true // Cacheleme etkinleştirildi.
+        //     },
+        //     minimumInputLength: 2 // Kullanıcı en az 2 karakter girmeli.
+        // });
+
+        var userData = [];
+
+        // Veriyi bir kez alıp userData içinde saklıyoruz
+        $.ajax({
+            url: '/Users/GetUsers',
+            dataType: 'json',
+            success: function (data) {
+                userData = $.map(data, function (item) {
+                    return {
+                        id: item.id,
+                        text: item.text
+                    };
+                });
+
+                // select2'yi userData ile başlatıyoruz
+                $('#UserSelect').select2({
+                    data: userData,
+                    placeholder: 'Select User',
+                    allowClear: true
+                });
+            },
+            error: function (xhr, status, error) {
+                console.error("Veri alırken hata oluştu:", error);
+            }
+        });
+        });
+
+        $(document).ready(function () {
+            $.ajax({
+                url: '/api/logs',
+                method: 'GET',
+                dataType: 'json',
+                success: function (data) {
+                    console.log("Received Data:", data);
+                $('#logTable tbody').empty();
+                    data.forEach(function (log) {
+                        console.log(log);
+                        $('#logTable tbody').append(
+                            `<tr>
+                                <td>${new Date(log.date).toLocaleString()}</td>
+                                <td>${log.level}</td>
+                                <td>${log.logger}</td>
+                                <td>${log.message}</td>
+                                <td>${log.userFirstName}</td>
+                            </tr>`
+                        );
+                    });
+                },
+                error: function (error) {
+                    console.log("Error:", error);
+                }
+            });
+        $('#filter').click(function () {
+            var selectedUser = $('#selectedUser').val();
+            var beginDate = $('#beginDate').val();
+            var endDate = $('#endDate').val();
+
+            $.ajax({
+                url: '/api/logs/filter',
+                type: 'GET',
+                data: {
+                    selectedUser: selectedUser,
+                    beginDate: beginDate,
+                    endDate: endDate
+                },
+                success: function (data) {
+                    var tableBody = $('#logsTable tbody');
+                    tableBody.empty();
+
+                    $.each(data, function (index, log) {
+                        tableBody.append('<tr><td>' + log.date + '</td><td>' + log.level + '</td><td>' + log.logger + '</td><td>' + log.message + '</td><td>' + log.userFirstName + '</td></tr>');
+                    });
+                },
+                error: function (error) {
+                    console.log('Error:', error);
+                }
+            });
+        });
+        });
+
+    </script>
