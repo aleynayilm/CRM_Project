@@ -1,0 +1,29 @@
+﻿@model CRMV2.ViewModels.CompanyVM
+@{
+	ViewData["Title"] = "Company Page";
+}
+<h1>Create a New Company</h1>
+<div class="text-center">
+</div>
+
+<form asp-action="Create">
+	<div asp-validation-summary="ModelOnly" class="text-danger"></div>
+	<table>
+		<tr>
+			<td>Company Name:</td>
+			<td>@Html.TextBoxFor(m => m.CompanyName)</td>
+		</tr>
+		<tr>
+			<td>Company Address:</td>
+			<td>@Html.TextBoxFor(m => m.Address)</td>
+		</tr>
+		<tr>
+			<td>Company Email:</td>
+			<td>@Html.TextBoxFor(m => m.Email)</td>
+		</tr>
+	</table>
+	<div class="form-group">
+		<input type="submit" value="Create" class="btn btn-outline-success float-right" />
+		<a class="btn btn-outline-secondary" asp-action="Index">Show All</a>
+	</div>
+</form>

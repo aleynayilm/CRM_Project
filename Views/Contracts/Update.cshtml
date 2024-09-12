@@ -1,0 +1,39 @@
+﻿@model CRMV2.ViewModels.ContractVM
+@{
+    ViewData["Title"] = "Update Contract";
+}
+<h1>Update Contract</h1>
+
+<form asp-action="Update">
+    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+    <table>
+        <tr>
+            <td>Company:</td>
+            <td>@Html.DropDownListFor(m => m.SelectedCompany, Model.Companies, "Select Company", new { @class = "form-control", id = "companySelect" })</td>
+        </tr>
+        <tr>
+            <td>Contract Name:</td>
+            <td>@Html.TextBoxFor(m => m.Name)</td>
+        </tr>
+        <tr>
+            <td>Contract Begin Date:</td>
+            <td>@Html.TextBoxFor(m => m.BeginDate)</td>
+        </tr>
+        <tr>
+            <td>Contract End Date:</td>
+            <td>@Html.TextBoxFor(m => m.EndDate)</td>
+        </tr>
+        @* <tr>
+            <td>Is the Contract Active:</td>
+            <td>@Html.CheckBoxFor(m => m.Active)</td>
+        </tr> *@
+        <tr>
+            <td>Contract Type:</td>
+            <td>@Html.DropDownListFor(m => m.SelectedContractType, Model.ContractTypes, "Select Contract Type", new { @class = "form-control", id = "contractTypeSelect" })</td>
+        </tr>
+    </table>
+    <div class="form-group">
+        <input type="submit" value="Update" class="btn btn-outline-success float-right" />
+        <a class="btn btn-outline-secondary" asp-action="Index">Show All</a>
+    </div>
+</form>

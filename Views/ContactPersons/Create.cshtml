@@ -1,0 +1,35 @@
+﻿@model CRMV2.ViewModels.ContactPersonVM
+@{
+    ViewData["Title"] = "Create a New Contact Person";
+}
+<h1>Create a New Contact Person</h1>
+
+<form asp-action="Create">
+    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+    <table>
+        <tr>
+            <td>Contract:</td>
+            <td>@Html.DropDownListFor(m => m.SelectedContractt, Model.Contractt, "Select Contract", new { @class = "form-control", id = "contractSelect" })</td>
+        </tr>
+        <tr>
+            <td>Contact Person Name:</td>
+            <td>@Html.TextBoxFor(m => m.Name)</td>
+        </tr>
+        <tr>
+            <td>Contact Person Last Name:</td>
+            <td>@Html.TextBoxFor(m => m.LastName)</td>
+        </tr>
+        <tr>
+            <td>Contact Person Phone Number:</td>
+            <td>@Html.TextBoxFor(m => m.PhoneNumber)</td>
+        </tr>
+        <tr>
+            <td>Contact Person Email:</td>
+            <td>@Html.TextBoxFor(m => m.Email)</td>
+        </tr>
+    </table>
+    <div class="form-group">
+        <input type="submit" value="Create" class="btn btn-outline-success float-right" />
+        <a class="btn btn-outline-secondary" asp-action="Index">Show All</a>
+    </div>
+</form>
